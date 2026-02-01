@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MatPåKronan.se</title>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
+<style>
+    body {
+        background-color: #4da6ff; /* blå bakrund */
+        font-family: 'Dancing Script', comic sans */
+        color: black;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+    }
+    h1 {
+        margin-top: 40px;
+        font-size: 2.5em;
+    }
+    .section {
+        margin: 50px 20px;
+        padding: 20px;
+        border-radius: 15px;
+        background-color: #80c1ff; /* ljusare blå för sektioner */
+    }
+    .price-buttons button, .portion-controls button {
+        border: none;
+        border-radius: 25px; /* runda knappar */
+        padding: 10px 20px;
+        margin: 10px;
+        font-size: 1em;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+    .price-buttons button:hover, .portion-controls button:hover {
+        transform: scale(1.1);
+        background-color: #3399ff;
+        color: white;
+    }
+    .recipe {
+        margin-top: 30px;
+        padding: 20px;
+        background-color: #b3d9ff;
+        border-radius: 15px;
+        text-align: left;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .recipe h3 {
+        text-align: center;
+        font-size: 1.5em;
+    }
+    .recipe p {
+        margin: 8px 0;
+        line-height: 1.5em;
+    }
+    .recipe .method {
+        font-weight: bold;
+        color: #003366;
+    }
+    .portion-controls {
+        margin: 10px 0;
+        text-align: center;
+    }
+    .portion-count {
+        font-size: 1.2em;
+        margin: 0 15px;
+    }
+    html {
+        scroll-behavior: smooth;
+    }
+    @media(max-width:600px){
+        .price-buttons button, .portion-controls button {
+            width: 80%;
+        }
+        .recipe {
+            width: 90%;
+        }
+.script {
+padding: 0px 60px;
+    }
+</style>
+</head>
+<body>
+
+<h1>Billiga Recept med Tillagning</h1>
+
+<!-- Frukost -->
+<div class="section" id="frukost">
+    <h2>Frukost</h2>
+    <div class="price-buttons">
+        <button onclick="showRecipes('frukost',10)">10 kr</button>
+        <button onclick="showRecipes('frukost',20)">20 kr</button>
+        <button onclick="showRecipes('frukost',30)">30 kr</button>
+    </div>
+    <div id="frukost-recipes"></div>
+</div>
+
+<!-- Lunch -->
+<div class="section" id="lunch">
+    <h2>Lunch</h2>
+    <div class="price-buttons">
+        <button onclick="showRecipes('lunch',10)">10 kr</button>
+        <button onclick="showRecipes('lunch',20)">20 kr</button>
+        <button onclick="showRecipes('lunch',30)">30 kr</button>
+    </div>
+    <div id="lunch-recipes"></div>
+</div>
+
+<!-- Middag -->
+<div class="section" id="middag">
+    <h2>Middag</h2>
+    <div class="price-buttons">
+        <button onclick="showRecipes('middag',10)">10 kr</button>
+        <button onclick="showRecipes('middag',20)">20 kr</button>
+        <button onclick="showRecipes('middag',30)">30 kr</button>
+    </div>
+    <div id="middag-recipes"></div>
+</div>
+
+<script>
+// ======= RECEPTDATA =======
+const recipesData = {
+    frukost: {
+        10: [
+            {name:"Chiapudding med banan", ingredients:"2 msk chiafrön, 1 dl havremjölk, ½ banan, lite kanel", method:"Blanda chiafrön och havremjölk. Låt stå i kyl 3h eller över natten. Toppa med banan och kanel.", price:5.5},
+            {name:"Havregrynsgröt med rivet äpple och kardemumma", ingredients:"1 dl havregryn, 2 dl vatten, ½ äpple, nypa kardemumma", method:"Koka havregryn i vatten. Riv äpple och blanda. Strö över kardemumma.", price:5.5},
+            {name:"Smoothie med havre och bär", ingredients:"1 dl havregryn, 1 dl frysta bär, 1 dl mjölk, ½ banan", method:"Mixa alla ingredienser tills slät. Servera direkt.", price:7}
+        ],
+        20: [
+            {name:"Chiagröt med mango och kokos", ingredients:"3 msk chiafrön, 1 dl havremjölk, ½ mango, 1 tsk riven kokos", method:"Blanda chiafrön och havremjölk. Ställ i kyl 3h. Toppa med mango och kokos.", price:12},
+            {name:"Smoothie bowl med bär och granola", ingredients:"1 dl frysta bär, 1 dl yoghurt, ½ banan, 2 msk granola", method:"Mixa bär, yoghurt och banan. Häll i skål och toppa med granola.", price:14},
+            {name:"Overnight oats med äpple och kanel", ingredients:"½ dl havregryn, ½ dl mjölk, ½ äpple, 1 tsk kanel, 1 tsk honung", method:"Blanda allt i burk och låt stå i kyl över natten.", price:5}
+        ],
+        30: [
+            {name:"Acai bowl med frukt och nötter", ingredients:"100 g acai-puré, ½ banan, ½ dl granola, 1 tsk chiafrön, några bär", method:"Mixa acai-puré med banan. Toppa med granola, chiafrön och bär.", price:25},
+            {name:"Lyxig chiapudding med hallon och mandelsmör", ingredients:"3 msk chiafrön, 1 dl mandelmjölk, 1 msk mandelsmör, ½ dl hallon", method:"Blanda chiafrön och mandelmjölk. Ställ i kyl 3h. Toppa med hallon och mandelsmör.", price:16},
+            {name:"Overnight oats deluxe med bär och nötter", ingredients:"½ dl havregryn, ½ dl mjölk, ½ dl granola, ½ dl blandade bär, 10 g hackade nötter", method:"Blanda havregryn och mjölk i burk, låt stå i kyl. Toppa med granola, bär och nötter.", price:16}
+        ]
+    },
+    lunch: {
+        10: [
+            {name:"Morot- och ärtsoppa", ingredients:"2 morötter, 1 dl frysta ärtor, 2 dl vatten + ½ buljongtärning, salt, peppar", method:"Skala och skär morötter. Koka morötter och ärtor i vatten med buljong. Mixa slät. Servera med bröd.", price:5.5},
+            {name:"Linssallad med paprika och morot", ingredients:"½ dl röda linser, ½ paprika, 1 morot, 1 tsk olja, salt, peppar, citron", method:"Koka linser. Skär paprika och morot. Blanda med linser och dressing.", price:5.5},
+            {name:"Tomat- och couscoussallad", ingredients:"½ dl couscous, ½ dl kokande vatten, ½ tomat, örtsalt", method:"Häll couscous i skål, tillsätt kokande vatten. Skär tomat och blanda. Smaka av.", price:4.5}
+        ],
+        20: [
+            {name:"Kyckling- och grönsakswrap", ingredients:"50 g kycklingfilé, 1 tortillabröd, sallad, tomat, gurka, 1 tsk majonnäs", method:"Stek kyckling. Skär grönsaker. Bred majonnäs på bröd, lägg på ingredienser, rulla.", price:16},
+            {name:"Tonfisk- och quinoasallad", ingredients:"50 g quinoa, 1 burk tonfisk, ½ paprika, 1 tsk olivolja", method:"Koka quinoa. Skär paprika. Blanda med tonfisk och olja.", price:19},
+            {name:"Pasta med grönsaker och pesto", ingredients:"50 g pasta, ½ zucchini, 1 msk pesto", method:"Koka pasta. Stek zucchini. Blanda med pesto och pasta.", price:10}
+        ],
+        30: [
+            {name:"Lax- och avokadobowl", ingredients:"100 g lax, ½ avokado, sallad, tomat, gurka, 1 tsk olivolja", method:"Stek lax. Skär grönsaker. Lägg sallad, toppa med lax och avokado. Ringla olja.", price:30},
+            {name:"Köttfärs- och grönsakswok med ris", ingredients:"100 g nötfärs, ½ paprika, ½ morot, 50 g ris, 1 tsk soja", method:"Koka ris. Stek köttfärs. Tillsätt grönsaker och soja. Servera med ris.", price:27},
+            {name:"Mediterransk kikärtsbowl", ingredients:"1 dl kikärtor, ½ paprika, 5 oliver, ½ dl fetaost, sallad, 1 tsk olivolja", method:"Lägg sallad i skål. Tillsätt kikärtor, paprika, oliver, feta. Ringla olja.", price:17}
+        ]
+    },
+    middag: {
+        10: [
+            {name:"Grönsakssoppa med linser", ingredients:"1 morot, ½ zucchini, ½ dl röda linser, 2 dl vatten + ½ buljong, salt, peppar", method:"Skär grönsaker. Koka i vatten med buljong. Mixa. Servera varm.", price:6},
+            {name:"Ugnsrostade rotfrukter med örtsalt", ingredients:"1 potatis, 1 morot, ½ palsternacka, ½ tsk olja, örtsalt", method:"Skär rotfrukter. Rosta i ugn 20-25 min. Servera.", price:4.5},
+            {name:"Kikärtswok med morot och paprika", ingredients:"1 dl kikärtor, ½ morot, ½ paprika, 1 tsk soja, ½ tsk olja", method:"Stek grönsaker i olja, tillsätt kikärtor och soja. Servera.", price:7}
+        ],
+        20: [
+            {name:"Kycklinggryta med paprika och tomat", ingredients:"100 g kyckling, ½ paprika, ½ burk krossade tomater, 1 tsk olja, kryddor", method:"Stek kyckling. Tillsätt paprika, tomater och kryddor. Koka 5 min. Servera med ris/pasta.", price:19},
+            {name:"Pasta med linser och tomatsås", ingredients:"50 g pasta, ½ dl linser, ½ burk krossade tomater, ½ lök, 1 tsk olja, kryddor", method:"Koka pasta. Stek lök. Tillsätt linser och tomater. Servera med pasta.", price:14},
+            {name:"Vegetarisk risotto med zucchini", ingredients:"50 g ris, ½ zucchini, 1 dl buljong, 1 tsk olja, kryddor", method:"Fräs zucchini. Tillsätt ris och buljong gradvis. Rör tills krämigt. Servera.", price:7}
+        ],
+        30: [
+            {name:"Lax med potatis och gröna ärtor", ingredients:"100 g lax, 2 potatisar, 1 dl ärtor, 1 tsk smör, kryddor", method:"Koka potatis. Stek lax. Koka ärtor. Servera.", price:31},
+            {name:"Köttfärssås med pasta", ingredients:"100 g nötfärs, 50 g pasta, ½ burk tomater, ½ lök, 1 tsk olja, kryddor", method:"Koka pasta. Stek lök och köttfärs. Tillsätt tomater och kryddor. Servera.", price:27},
+            {name:"Kyckling med grönsakswok och ris", ingredients:"100 g kyckling, ½ paprika, ½ zucchini, 50 g ris, 1 tsk soja, 1 tsk olja", method:"Koka ris. Stek kyckling och grönsaker. Blanda med soja. Servera.", price:21.5}
+        ]
+    }
+};
+
+// ======= LOCALSTORAGE FÖR PORTIONER =======
+function getPortion(category, priceIndex) {
+    let saved = localStorage.getItem(category+"_"+priceIndex);
+    return saved ? parseInt(saved) : 1;
+}
+function savePortion(category, priceIndex, value) {
+    localStorage.setItem(category+"_"+priceIndex, value);
+}
+
+// ======= ÄNDRA PORTIONER =======
+function changePortion(btn, basePrice, delta) {
+    const span = btn.parentElement.querySelector('.portion-count');
+    let portions = parseInt(span.textContent);
+    portions += delta;
+    if(portions < 1) portions = 1;
+    if(portions > 5) portions = 5;
+    span.textContent = portions;
+    const priceEl = btn.parentElement.parentElement.querySelector('.total-price');
+    priceEl.textContent = (basePrice * portions).toFixed(1);
+    const category = btn.closest('.section').id;
+    savePortion(category, parseInt(basePrice), portions);
+}
+
+// ======= VISA RECEPT =======
+function showRecipes(category, price) {
+    const container = document.getElementById(category+"-recipes");
+    container.innerHTML = "";
+    const recipes = recipesData[category][price];
+    recipes.forEach(r => {
+        let portions = getPortion(category, price);
+        container.innerHTML += `
+        <div class="recipe">
+            <h3>${r.name}</h3>
+            <p><strong>Ingredienser:</strong> ${r.ingredients}</p>
+            <p class="method"><strong>Tillagning:</strong> ${r.method}</p>
+            <p>Pris för ${portions} portion(er): <span class="total-price">${(r.price*portions).toFixed(1)}</span> kr</p>
+            <div class="portion-controls">
+                <button onclick="changePortion(this, ${r.price}, -1)">-</button>
+                <span class="portion-count">${portions}</span>
+                <button onclick="changePortion(this, ${r.price}, 1)">+</button>
+            </div>
+        </div>`;
+    });
+    container.scrollIntoView({behavior:"smooth"});
+}
+</script>
+
+</body>
+</html>
+
